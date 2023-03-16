@@ -16,7 +16,10 @@ func SwitchingListenAndServe(router func() http.Handler, port string) {
 		lambda.Start(router())
 	} else {
 		validatePort(port)
-		http.ListenAndServe(port, router())
+		err := http.ListenAndServe(port, router())
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
