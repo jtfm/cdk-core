@@ -1,22 +1,36 @@
 package lambda
 
 import (
+	"context"
+
 	"net/http"
 	"os"
 	"strconv"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	chiApiProxy "github.com/awslabs/aws-lambda-go-api-proxy/chi"
+	"github.com/go-chi/chi/v5"
 )
+
+type ApiConfig struct {
+	Router *chi.Mux
+}
 
 // A function that runs a router in a lambda environment or a local server
 // depending on whether the function is running in a lambda environment or not.
 // The port argument is ignored if the function is running in a lambda environment.
-func SwitchingListenAndServe(router func() http.Handler, port string) {
+func SwitchingListenAndServe(router *chi.Mux, port string) {
 	if IsInLambda() {
-		lambda.Start(router())
+		chiApiProxy := chiApiProxy.New(router)
+		lambda.Start(
+			func(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+				proxyRequest, err := chiApiProxy.ProxyWithContext(ctx, req)
+				return &proxyRequest, err
+			})
 	} else {
 		validatePort(port)
-		err := http.ListenAndServe(port, router())
+		err := http.ListenAndServe(port, router)
 		if err != nil {
 			panic(err)
 		}
