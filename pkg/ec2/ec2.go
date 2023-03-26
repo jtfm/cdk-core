@@ -10,7 +10,7 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-func exportSubnetIds(
+func ExportSubnetIds(
 	stack constructs.Construct,
 	vpc awsec2.IVpc,
 	subnetSelection *awsec2.SubnetSelection) {
