@@ -8,6 +8,8 @@ require (
 	github.com/aws/jsii-runtime-go v1.73.0
 )
 
+require github.com/iancoleman/strcase v0.2.0
+
 require (
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
 	github.com/aws/aws-lambda-go v1.37.0
