@@ -8,11 +8,15 @@ require (
 	github.com/aws/jsii-runtime-go v1.73.0
 )
 
-require github.com/iancoleman/strcase v0.2.0
+require (
+	github.com/awslabs/aws-lambda-go-api-proxy v0.14.0
+	github.com/go-chi/chi/v5 v5.0.8
+	github.com/iancoleman/strcase v0.2.0
+)
 
 require (
 	github.com/Masterminds/semver/v3 v3.2.0 // indirect
-	github.com/aws/aws-lambda-go v1.37.0
+	github.com/aws/aws-lambda-go v1.38.0
 	github.com/cdklabs/awscdk-asset-awscli-go/awscliv1/v2 v2.2.49 // indirect
 	github.com/cdklabs/awscdk-asset-kubectl-go/kubectlv20/v2 v2.1.1 // indirect
 	github.com/cdklabs/awscdk-asset-node-proxy-agent-go/nodeproxyagentv5/v2 v2.0.38 // indirect
