@@ -3,17 +3,17 @@ package stacks
 import (
 	"fmt"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
+	"github.com/iancoleman/strcase"
 )
 
 // ExtendedStack is a stack that adds some additional functionality to the standard stack
-
 type ExtendedStackProps struct {
 	awscdk.StackProps
-	Version *string
-	Build   *string
+	semver semver.Version
 }
 
 type ExtendedStack struct {
@@ -25,8 +25,14 @@ func NewExtendedStack(
 	id *string,
 	props *ExtendedStackProps) ExtendedStack {
 
+	if props == nil {
+		panic("props are required")
+	}
+
 	props.StackName = jsii.String(fmt.Sprintf(
-		"%s-%s-%s", *props.StackName, *props.Version, *props.Build))
+		"%s-%s",
+		strcase.ToKebab(*props.StackName),
+		props.semver.String()))
 
 	stack := awscdk.NewStack(scope, id, &props.StackProps)
 
