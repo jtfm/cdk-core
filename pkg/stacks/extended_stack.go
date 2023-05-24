@@ -13,7 +13,7 @@ import (
 // ExtendedStack is a stack that adds some additional functionality to the standard stack
 type ExtendedStackProps struct {
 	awscdk.StackProps
-	semver semver.Version
+	Semver semver.Version
 }
 
 type ExtendedStack struct {
