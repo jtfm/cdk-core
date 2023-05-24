@@ -32,7 +32,7 @@ func NewExtendedStack(
 	props.StackName = jsii.String(fmt.Sprintf(
 		"%s-%s",
 		strcase.ToKebab(*props.StackName),
-		props.semver.String()))
+		props.Semver.String()))
 
 	stack := awscdk.NewStack(scope, id, &props.StackProps)
 
