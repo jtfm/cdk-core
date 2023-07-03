@@ -10,11 +10,12 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/aws-cdk-go/awscdk/v2"
-	"github.com/aws/jsii-runtime-go"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/constructs-go/constructs/v10"
+	"github.com/aws/jsii-runtime-go"
 	chiApiProxy "github.com/awslabs/aws-lambda-go-api-proxy/chi"
 	"github.com/go-chi/chi/v5"
 )
@@ -110,9 +111,9 @@ func validatePort(port string) []error {
 // Creates a Lambda function using Go that will run on ARM64 architecture.
 // Other parameters can be supplied via dockerImageFunctionProps.
 func CreateArmGoDockerLambda(
-    stack *awscdk.Stack,
-    name string,
-    codePath string,
+    stack constructs.Construct,
+    name *string,
+    codePath *string,
     dockerImageFunctionProps *awslambda.DockerImageFunctionProps) *awslambda.DockerImageFunction {
 
 		// Create a new DockerImageFunctionProps if one doesn't exist
@@ -120,9 +121,9 @@ func CreateArmGoDockerLambda(
 			dockerImageFunctionProps = &awslambda.DockerImageFunctionProps{}
 		}
 
-    dockerImageFunctionProps.FunctionName = &name
+    dockerImageFunctionProps.FunctionName = name
     dockerImageFunctionProps.Code = awslambda.DockerImageCode_FromImageAsset(
-        &codePath,
+        codePath,
         &awslambda.AssetImageCodeProps{},
     )
 
@@ -142,8 +143,8 @@ func CreateArmGoDockerLambda(
     dockerImageFunctionProps.Environment = &env
 
     dockerImageFunction := awslambda.NewDockerImageFunction(
-        *stack,
-        &name,
+        stack,
+        name,
         dockerImageFunctionProps,
     )
 
