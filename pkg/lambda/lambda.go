@@ -10,13 +10,12 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
-	chiApiProxy "github.com/awslabs/aws-lambda-go-api-proxy/chi"
+	chiproxy "github.com/awslabs/aws-lambda-go-api-proxy/chi"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -66,7 +65,7 @@ func SwitchingHttpHandler(addr string, handler http.Handler) error {
 // The addr argument is ignored if the function is running in a lambda environment.
 func SwitchingRouter(addr string, router *chi.Mux) error {
 	if IsInLambda() {
-		chiApiProxy := chiApiProxy.New(router)
+		chiApiProxy := chiproxy.New(router)
 		lambda.Start(
 			func(ctx context.Context, req events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 				proxyRequest, err := chiApiProxy.ProxyWithContext(ctx, req)
@@ -111,42 +110,42 @@ func validatePort(port string) []error {
 // Creates a Lambda function using Go that will run on ARM64 architecture.
 // Other parameters can be supplied via dockerImageFunctionProps.
 func CreateArmGoDockerLambda(
-    stack constructs.Construct,
-    name *string,
-    codePath *string,
-    dockerImageFunctionProps *awslambda.DockerImageFunctionProps) *awslambda.DockerImageFunction {
+	stack constructs.Construct,
+	name *string,
+	codePath *string,
+	dockerImageFunctionProps *awslambda.DockerImageFunctionProps) *awslambda.DockerImageFunction {
 
-		// Create a new DockerImageFunctionProps if one doesn't exist
-		if dockerImageFunctionProps == nil {
-			dockerImageFunctionProps = &awslambda.DockerImageFunctionProps{}
-		}
+	// Create a new DockerImageFunctionProps if one doesn't exist
+	if dockerImageFunctionProps == nil {
+		dockerImageFunctionProps = &awslambda.DockerImageFunctionProps{}
+	}
 
-    dockerImageFunctionProps.FunctionName = name
-    dockerImageFunctionProps.Code = awslambda.DockerImageCode_FromImageAsset(
-        codePath,
-        &awslambda.AssetImageCodeProps{},
-    )
+	dockerImageFunctionProps.FunctionName = name
+	dockerImageFunctionProps.Code = awslambda.DockerImageCode_FromImageAsset(
+		codePath,
+		&awslambda.AssetImageCodeProps{},
+	)
 
-    dockerImageFunctionProps.Architecture = awslambda.Architecture_ARM_64()
+	dockerImageFunctionProps.Architecture = awslambda.Architecture_ARM_64()
 
-    // Create a map for environment variables if one doesn't exist
-    if dockerImageFunctionProps.Environment == nil {
-        dockerImageFunctionProps.Environment = &map[string]*string{}
-    }
-    env := *dockerImageFunctionProps.Environment
+	// Create a map for environment variables if one doesn't exist
+	if dockerImageFunctionProps.Environment == nil {
+		dockerImageFunctionProps.Environment = &map[string]*string{}
+	}
+	env := *dockerImageFunctionProps.Environment
 
-		// Add environment variables necessary for running Go under ARM64
-    env["CGO_ENABLED"] = jsii.String("0")
-    env["GOOS"] = jsii.String("linux")
-    env["GOARCH"] = jsii.String("arm64")
+	// Add environment variables necessary for running Go under ARM64
+	env["CGO_ENABLED"] = jsii.String("0")
+	env["GOOS"] = jsii.String("linux")
+	env["GOARCH"] = jsii.String("arm64")
 
-    dockerImageFunctionProps.Environment = &env
+	dockerImageFunctionProps.Environment = &env
 
-    dockerImageFunction := awslambda.NewDockerImageFunction(
-        stack,
-        name,
-        dockerImageFunctionProps,
-    )
+	dockerImageFunction := awslambda.NewDockerImageFunction(
+		stack,
+		name,
+		dockerImageFunctionProps,
+	)
 
-    return &dockerImageFunction
+	return &dockerImageFunction
 }
