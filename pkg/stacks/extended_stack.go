@@ -10,35 +10,47 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-// ExtendedStack is a stack that adds some additional functionality to the standard stack
-type ExtendedStackProps struct {
+type Build uint8
+
+const (
+	Prod Build = iota
+	Dev
+)
+
+type StackProps struct {
 	awscdk.StackProps
 	Semver semver.Version
+	Build  Build
 }
 
-type ExtendedStack struct {
+func (s Build) String() string {
+	return [...]string{"prod", "dev"}[s]
+}
+
+type Stack struct {
 	awscdk.Stack
 }
 
-func NewExtendedStack(
+func NewStack(
 	scope constructs.Construct,
 	id *string,
-	props *ExtendedStackProps) ExtendedStack {
+	props *StackProps) Stack {
 
 	if props == nil {
 		panic("props are required")
 	}
 
 	props.StackName = jsii.String(fmt.Sprintf(
-		"%s-%s",
+		"%s-%s-%s",
 		strcase.ToKebab(*props.StackName),
-		props.Semver.String()))
+		props.Semver.String(),
+		props.Build.String()))
 
 	stack := awscdk.NewStack(scope, id, &props.StackProps)
 
-	return ExtendedStack{stack}
+	return Stack{stack}
 }
 
-func (s ExtendedStack) GetName() *string {
+func (s Stack) GetName() *string {
 	return s.StackName()
 }
