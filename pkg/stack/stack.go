@@ -41,9 +41,9 @@ func NewStack(
 	}
 
 	props.StackName = jsii.String(fmt.Sprintf(
-		"%s-%s-%s",
+		"%s-v%d-%s",
 		strcase.ToKebab(*props.StackName),
-		props.Semver.String(),
+		props.Semver.Major(),
 		props.Build.String()))
 
 	stack := awscdk.NewStack(scope, id, &props.StackProps)
