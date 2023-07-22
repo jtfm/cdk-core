@@ -1,4 +1,4 @@
-module github.com/jtfm/go-cdk-core
+module github.com/jtfm/go-cdk-core/v2
 
 go 1.19
 
