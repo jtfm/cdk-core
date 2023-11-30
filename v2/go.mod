@@ -1,4 +1,4 @@
-module github.com/jtfm/cdk-core
+module github.com/jtfm/cdk-core/v2
 
 go 1.21
 
