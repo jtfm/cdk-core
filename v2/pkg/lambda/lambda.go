@@ -108,7 +108,7 @@ func validatePort(port string) []error {
 }
 
 // Creates a Lambda function using Go that will run on ARM64 architecture.
-// Other parameters can be supplied via dockerImageFunctionProps.
+// Other parameters can be supplied via dockerImageFunctionProps. Test Change.
 func CreateArmGoDockerLambda(
 	stack constructs.Construct,
 	name *string,
